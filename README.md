@@ -15,7 +15,7 @@ Dataset generator CLI for multilingual student feedback. Generate high-quality, 
 Ensure you have [uv](https://github.com/astral-sh/uv) installed.
 
 ```bash
-git clone https://github.com/your-repo/facugen.git
+git clone https://github.com/CtrlAltElite-Devs/facugen.git
 cd facugen
 uv sync
 ```
