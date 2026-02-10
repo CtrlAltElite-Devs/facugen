@@ -8,6 +8,7 @@ dependencies = [
     "google-genai>=1.62.0",
     "openai>=2.18.0",
     "python-dotenv>=1.2.1",
+    "tqdm>=4.67.3",
 ]
 
 [tool.uv]

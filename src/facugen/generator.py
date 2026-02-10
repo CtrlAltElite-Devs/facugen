@@ -1,3 +1,5 @@
+from tqdm import tqdm
+from facugen.label_planner import plan_labels
 import json
 import random
 import time
@@ -50,11 +52,12 @@ def generate_batch(
     *,
     lang_type: str,
     count: int,
+    balance_labels: bool = False,
 ):
     samples = []
+    labels = plan_labels(count, balance_labels)
 
-    for _ in range(count):
-        label = random.choice(LABELS)
+    for label in tqdm(labels, desc="Generating samples", unit="sample"):
         sample = generate_one(
             provider,
             lang_type=lang_type,

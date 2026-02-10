@@ -1,14 +1,16 @@
-import json
-from facugen.generator import generate_batch
-from facugen.provider_factory import create_provider
 import argparse
+import asyncio
+import json
 import sys
+
 from dotenv import load_dotenv
 
-
+from facugen.async_generator import generate_batch_async
 from facugen.constants import SUPPORTED_LANGS
+from facugen.generator import generate_batch
 from facugen.model_resolver import resolve_model
 from facugen.models import SUPPORTED_MODELS
+from facugen.provider_factory import create_provider
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,6 +45,30 @@ def build_parser() -> argparse.ArgumentParser:
         "--out", default="dataset.jsonl", help="Output file path (JSONL format)"
     )
 
+    generate.add_argument(
+        "--balance-labels",
+        action="store_true",
+        help="Generate an equal number of positive, neutral, and negative samples",
+    )
+
+    generate.add_argument(
+        "--seed", type=int, help="Seed for reproducible dataset generation"
+    )
+
+    generate.add_argument(
+        "--async",
+        action="store_true",
+        dest="use_async",
+        help="Generate samples concurrently",
+    )
+
+    generate.add_argument(
+        "--concurrency",
+        type=int,
+        default=5,
+        help="Max concurrent API requests (async only)",
+    )
+
     return parser
 
 
@@ -51,15 +77,36 @@ def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    if args.seed is not None:
+        import random
+
+        random.seed(args.seed)
+
     try:
         model_spec = resolve_model(args.model)
         provider = create_provider(model_spec)
 
-        # Generate samples
-        samples = generate_batch(provider, lang_type=args.lang, count=args.count)
+        if args.use_async:
+            samples = asyncio.run(
+                generate_batch_async(
+                    provider,
+                    lang_type=args.lang,
+                    count=args.count,
+                    balance_labels=args.balance_labels,
+                    concurrency=args.concurrency,
+                )
+            )
+        else:
+            samples = generate_batch(
+                provider,
+                lang_type=args.lang,
+                count=args.count,
+                balance_labels=args.balance_labels,
+            )
 
         # Write JSONL
         from pathlib import Path
+
         output_path = Path(args.out)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 

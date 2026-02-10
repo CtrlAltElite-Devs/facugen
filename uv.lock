@@ -201,6 +201,7 @@ dependencies = [
     { name = "google-genai" },
     { name = "openai" },
     { name = "python-dotenv" },
+    { name = "tqdm" },
 ]
 
 [package.metadata]
@@ -208,6 +209,7 @@ requires-dist = [
     { name = "google-genai", specifier = ">=1.62.0" },
     { name = "openai", specifier = ">=2.18.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
+    { name = "tqdm", specifier = ">=4.67.3" },
 ]
 
 [[package]]
