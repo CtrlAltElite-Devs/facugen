@@ -22,13 +22,5 @@ class GeminiClient:
             },
         )
 
-        # The new SDK response object has a text attribute, but let's be safe
         text = response.text
-        if not text:
-            # Fallback for structured responses or empty results
-            try:
-                text = response.candidates[0].content.parts[0].text
-            except (AttributeError, IndexError):
-                text = str(response)
-        
-        return text.strip()
+        return text.strip()  # ty:ignore[possibly-missing-attribute]

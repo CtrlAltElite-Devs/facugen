@@ -2,11 +2,12 @@ import asyncio
 from tqdm import tqdm
 from facugen.generator import generate_one
 from facugen.label_planner import plan_labels
+from facugen.providers import LLMProvider
 
 
 async def generate_one_async(
     semaphore: asyncio.Semaphore,
-    provider,
+    provider: LLMProvider,
     *,
     lang_type: str,
     label: str,
@@ -19,7 +20,7 @@ async def generate_one_async(
 
 
 async def generate_batch_async(
-    provider,
+    provider: LLMProvider,
     *,
     lang_type: str,
     count: int,
