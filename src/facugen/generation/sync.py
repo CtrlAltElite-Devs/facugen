@@ -1,19 +1,19 @@
 from tqdm import tqdm
-from facugen.label_planner import plan_labels
+from facugen.generation.planner import plan_labels
 import json
 import random
 import time
 
 from facugen.prompts.builder import build_prompt
-from facugen.validation import is_valid_sample
-from facugen.schema import Label
+from facugen.core import is_valid_sample, Label
+from facugen.providers import LLMProvider
 
 
 LABELS: list[Label] = ["positive", "neutral", "negative"]
 
 
 def generate_one(
-    provider,
+    provider: LLMProvider,
     *,
     lang_type: str,
     label: str,
@@ -48,7 +48,7 @@ def generate_one(
 
 
 def generate_batch(
-    provider,
+    provider: LLMProvider,
     *,
     lang_type: str,
     count: int,

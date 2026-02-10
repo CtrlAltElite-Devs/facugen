@@ -1,5 +1,5 @@
 import random
-from facugen.schema import Label
+from facugen.core import Label
 
 LABELS: list[Label] = ["positive", "neutral", "negative"]
 

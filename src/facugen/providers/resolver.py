@@ -1,4 +1,4 @@
-from facugen.models import SUPPORTED_MODELS, ModelSpec
+from facugen.core import SUPPORTED_MODELS, ModelSpec
 
 
 def resolve_model(model_name: str) -> ModelSpec:
