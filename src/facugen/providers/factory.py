@@ -1,5 +1,7 @@
-from facugen.models import ModelSpec
-from facugen.providers import LLMProvider, OpenAIClient, GeminiClient
+from facugen.core import ModelSpec
+from facugen.providers.base import LLMProvider
+from facugen.providers.openai import OpenAIClient
+from facugen.providers.gemini import GeminiClient
 
 
 def create_provider(model_spec: ModelSpec) -> LLMProvider:

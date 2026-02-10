@@ -1,12 +1,11 @@
 from tqdm import tqdm
-from facugen.label_planner import plan_labels
+from facugen.generation.planner import plan_labels
 import json
 import random
 import time
 
 from facugen.prompts.builder import build_prompt
-from facugen.validation import is_valid_sample
-from facugen.schema import Label
+from facugen.core import is_valid_sample, Label
 from facugen.providers import LLMProvider
 
 

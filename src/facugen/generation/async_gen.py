@@ -1,7 +1,7 @@
 import asyncio
 from tqdm import tqdm
-from facugen.generator import generate_one
-from facugen.label_planner import plan_labels
+from facugen.generation.sync import generate_one
+from facugen.generation.planner import plan_labels
 from facugen.providers import LLMProvider
 
 

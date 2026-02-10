@@ -5,12 +5,9 @@ import sys
 
 from dotenv import load_dotenv
 
-from facugen.async_generator import generate_batch_async
-from facugen.constants import SUPPORTED_LANGS
-from facugen.generator import generate_batch
-from facugen.model_resolver import resolve_model
-from facugen.models import SUPPORTED_MODELS
-from facugen.provider_factory import create_provider
+from facugen.generation import generate_batch, generate_batch_async
+from facugen.core import SUPPORTED_LANGS, SUPPORTED_MODELS
+from facugen.providers import resolve_model, create_provider
 
 
 def build_parser() -> argparse.ArgumentParser:
