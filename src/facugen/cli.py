@@ -5,9 +5,9 @@ import sys
 
 from dotenv import load_dotenv
 
+from facugen.core import SUPPORTED_LANGS
 from facugen.generation import generate_batch, generate_batch_async
-from facugen.core import SUPPORTED_LANGS, SUPPORTED_MODELS
-from facugen.providers import resolve_model, create_provider
+from facugen.providers import create_provider, resolve_model
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -34,12 +34,11 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument(
         "--model",
         default="gpt-4o",
-        choices=sorted(SUPPORTED_MODELS.keys()),
         help="Model to use for generation (default: %(default)s)",
     )
 
     generate.add_argument(
-        "--out", default="dataset.jsonl", help="Output file path (JSONL format)"
+        "--out", default="out/dataset.jsonl", help="Output file path (JSONL format)"
     )
 
     generate.add_argument(

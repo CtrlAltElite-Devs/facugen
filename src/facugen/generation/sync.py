@@ -35,16 +35,20 @@ def generate_one(
 
         except Exception as e:
             last_error = str(e)
-            if "RESOURCE_EXHAUSTED" in last_error or "429" in last_error:
+            
+            # Check for transient errors that warrant a retry
+            is_transient = any(
+                msg in last_error for msg in ["RESOURCE_EXHAUSTED", "429", "rate limit"]
+            )
+            
+            if is_transient:
                 # Exponential backoff: 2, 4, 8, 16... + jitter
                 sleep_time = (2**attempt) + random.random()
                 time.sleep(sleep_time)
                 continue
-
-    raise RuntimeError(
-        f"Failed to generate valid sample after {max_retries} attempts. "
-        f"Last error: {last_error}"
-    )
+            
+            # If it's a critical error (like model not found), raise it immediately
+            raise
 
 
 def generate_batch(

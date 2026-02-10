@@ -17,4 +17,12 @@ SUPPORTED_MODELS = {
     "gemini-2.5-flash-lite": ModelSpec(
         provider="gemini", model="gemini-2.5-flash-lite"
     ),
+    # Ollama (Local)
+    "llama3.2": ModelSpec(provider="ollama", model="llama3.2"),
+    "llama3.2:1b": ModelSpec(provider="ollama", model="llama3.2:1b"),
+    "mistral": ModelSpec(provider="ollama", model="mistral"),
+    "gemma2": ModelSpec(provider="ollama", model="gemma2"),
+    "qwen2.5": ModelSpec(provider="ollama", model="qwen2.5"),
+    "qwen2.5:3b": ModelSpec(provider="ollama", model="qwen2.5:3b"),
+    "qwen2.5:7b": ModelSpec(provider="ollama", model="qwen2.5:7b"),
 }

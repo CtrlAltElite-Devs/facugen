@@ -5,7 +5,7 @@ Dataset generator CLI for multilingual student feedback. Generate high-quality, 
 ## Features
 
 - **Multilingual Support**: Supports English, Tagalog, Cebuano, Taglish, and Cebuano-English mix.
-- **Multiple Providers**: Integration with OpenAI and Google Gemini.
+- **Multiple Providers**: Integration with OpenAI, Google Gemini, and local models via **Ollama**.
 - **Sync & Async Generation**: Fast concurrent generation using `asyncio`.
 - **Balanced Sampling**: Option to generate equal distributions of sentiment labels.
 - **Progress Tracking**: Built-in `tqdm` support for monitoring generation.
@@ -22,6 +22,7 @@ uv sync
 
 ## Configuration
 
+### Cloud Providers
 Create a `.env` file in the root directory:
 
 ```env
@@ -29,11 +30,25 @@ OPENAI_API_KEY=your_openai_key
 GEMINI_API_KEY=your_gemini_key
 ```
 
+### Local Models (Ollama)
+Ensure [Ollama](https://ollama.com/) is installed and running on your machine. No API key is required for local models.
+
 ## Usage
 
 ### Basic Generation
 ```bash
 uv run facugen generate --lang taglish --count 100
+```
+
+### Local Generation (Ollama)
+Pull your desired model first:
+```bash
+ollama pull qwen2.5:7b
+```
+
+Run generation using the local model:
+```bash
+uv run facugen generate --lang tagalog --count 50 --model qwen2.5:7b
 ```
 
 ### Advanced Options
@@ -52,8 +67,8 @@ uv run facugen generate \
 ### Command Arguments
 - `--lang`: Target language (choices: `cebu_eng_mix`, `cebuano`, `english`, `tagalog`, `taglish`).
 - `--count`: Number of samples to generate.
-- `--model`: Model to use (e.g., `gpt-4o`, `gemini-1.5-flash`).
-- `--out`: Output path for JSONL file (default: `dataset.jsonl`).
+- `--model`: Model to use (e.g., `gpt-4o`, `gemini-1.5-flash`, `qwen2.5:7b`).
+- `--out`: Output path for JSONL file (default: `out/dataset.jsonl`).
 - `--balance-labels`: Ensures equal distribution of positive, neutral, and negative sentiments.
 - `--seed`: Set a random seed for reproducible dataset generation.
 - `--async`: Enables concurrent requests for much faster generation.
