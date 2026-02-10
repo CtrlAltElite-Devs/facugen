@@ -1,0 +1,65 @@
+import json
+import random
+import time
+
+from facugen.prompts.builder import build_prompt
+from facugen.validation import is_valid_sample
+from facugen.schema import Label
+
+
+LABELS: list[Label] = ["positive", "neutral", "negative"]
+
+
+def generate_one(
+    provider,
+    *,
+    lang_type: str,
+    label: str,
+    max_retries: int = 5,
+):
+    prompt = build_prompt(lang_type, label)
+
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            raw = provider.generate(prompt)
+            sample = json.loads(raw)
+
+            if is_valid_sample(sample, label=label, lang_type=lang_type):
+                return sample
+
+            last_error = "Schema validation failed"
+
+        except Exception as e:
+            last_error = str(e)
+            if "RESOURCE_EXHAUSTED" in last_error or "429" in last_error:
+                # Exponential backoff: 2, 4, 8, 16... + jitter
+                sleep_time = (2**attempt) + random.random()
+                time.sleep(sleep_time)
+                continue
+
+    raise RuntimeError(
+        f"Failed to generate valid sample after {max_retries} attempts. "
+        f"Last error: {last_error}"
+    )
+
+
+def generate_batch(
+    provider,
+    *,
+    lang_type: str,
+    count: int,
+):
+    samples = []
+
+    for _ in range(count):
+        label = random.choice(LABELS)
+        sample = generate_one(
+            provider,
+            lang_type=lang_type,
+            label=label,
+        )
+        samples.append(sample)
+
+    return samples

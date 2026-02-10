@@ -1,0 +1,21 @@
+[project]
+name = "facugen"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-genai>=1.62.0",
+    "openai>=2.18.0",
+    "python-dotenv>=1.2.1",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+facugen = "facugen.cli:main"
