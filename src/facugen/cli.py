@@ -5,9 +5,16 @@ import sys
 
 from dotenv import load_dotenv
 
-from facugen.core import SUPPORTED_LANGS
+from facugen.core import (
+    SUPPORTED_LANGS,
+    BenchmarkTimer,
+    get_logger,
+    setup_logging,
+)
 from facugen.generation import generate_batch, generate_batch_async
 from facugen.providers import create_provider, resolve_model
+
+logger = get_logger("facugen.cli")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -70,6 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None):
     load_dotenv()
+    setup_logging()
     parser = build_parser()
     args = parser.parse_args(argv)
 
@@ -81,6 +89,14 @@ def main(argv=None):
     try:
         model_spec = resolve_model(args.model)
         provider = create_provider(model_spec)
+
+        logger.info(
+            f"Starting generation: lang={args.lang}, count={args.count}, "
+            f"model={args.model} ({model_spec.provider})"
+        )
+
+        timer = BenchmarkTimer()
+        timer.start(args.count)
 
         if args.use_async:
             samples = asyncio.run(
@@ -100,6 +116,8 @@ def main(argv=None):
                 balance_labels=args.balance_labels,
             )
 
+        result = timer.stop()
+
         # Write JSONL
         from pathlib import Path
 
@@ -110,18 +128,15 @@ def main(argv=None):
             for sample in samples:
                 f.write(f"{json.dumps(sample, ensure_ascii=False)}\n")
 
-        print(f"Generated {len(samples)} samples -> {args.out}")
+        logger.info(f"Successfully generated {len(samples)} samples -> {args.out}")
+        logger.info(
+            f"Benchmark: Total Time: {result.total_time:.2f}s | "
+            f"Throughput: {result.samples_per_second:.2f} samples/sec"
+        )
 
-    except ValueError as e:
-        print(f"Error: {e}")
+    except Exception as e:
+        logger.error(f"Generation failed: {e}")
         sys.exit(1)
-
-    # TEMP: Just echo parsed arguemnts
-    print("Command:", args.command)
-    print("Language", args.lang)
-    print("Count: ", args.count)
-    print("Provider:", model_spec.provider)
-    print("Model: ", model_spec.model)
 
 
 if __name__ == "__main__":
