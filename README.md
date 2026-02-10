@@ -43,8 +43,9 @@ uv run facugen generate \
   --count 30 \
   --model gpt-4o-mini \
   --balance-labels \
+  --seed 42 \
   --async \
-  --concurrency 10 \
+  --concurrency 5 \
   --out datasets/feedback.jsonl
 ```
 
@@ -54,8 +55,9 @@ uv run facugen generate \
 - `--model`: Model to use (e.g., `gpt-4o`, `gemini-1.5-flash`).
 - `--out`: Output path for JSONL file (default: `dataset.jsonl`).
 - `--balance-labels`: Ensures equal distribution of positive, neutral, and negative sentiments.
+- `--seed`: Set a random seed for reproducible dataset generation.
 - `--async`: Enables concurrent requests for much faster generation.
-- `--concurrency`: Max number of parallel requests (default: 5).
+- `--concurrency`: Max number of parallel requests (default: 5). **Recommended value is 5** to avoid aggressive rate limiting from providers.
 
 ## Important: Model Limitations
 
